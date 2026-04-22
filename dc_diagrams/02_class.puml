@@ -1,0 +1,15 @@
+﻿@startuml
+title Roo-Code - 클래스 다이어그램(개념)
+class ProjectRoot
+class BuildConfig
+class Module_.changeset
+class Module_.github
+class Module_.husky
+class RuntimeService
+ProjectRoot --> BuildConfig
+ProjectRoot --> Module_.changeset
+ProjectRoot --> Module_.github
+ProjectRoot --> Module_.husky
+Module_.changeset --> RuntimeService
+Module_.github --> RuntimeService
+@enduml

@@ -1,0 +1,16 @@
+﻿@startuml
+title Roo-Code - 시퀀스 다이어그램
+actor User
+participant "EntryPoint" as EP
+participant "Module:.changeset" as A
+participant "Module:.github" as B
+participant "Runtime" as R
+User -> EP: 실행 요청
+EP -> A: 초기화
+A -> B: 기능 호출
+B -> R: 리소스/서비스 요청
+R --> B: 결과 반환
+B --> A: 처리 결과
+A --> EP: 완료
+EP --> User: 응답/화면 출력
+@enduml

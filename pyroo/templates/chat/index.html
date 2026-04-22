@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyRoo Chat</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --line: #dbe2ea;
+      --text: #1d2630;
+      --muted: #627081;
+      --brand: #1f7ae0;
+      --brand-hover: #0d66cb;
+      --user: #eff7ff;
+      --assistant: #fff6eb;
+      --danger: #b42318;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 0% 0%, #e8f1ff 0%, #f6f8fb 45%, #f6f8fb 100%);
+      color: var(--text);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      height: 100vh;
+    }
+
+    .left {
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .brand {
+      margin: 0 0 16px;
+      font-size: 22px;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .field input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 11px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .field input:focus {
+      border-color: var(--brand);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      background: #f6f9fc;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    .right {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .chat-header {
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      padding: 16px 20px;
+      font-weight: 700;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg {
+      max-width: min(760px, 90%);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #fff;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      animation: rise 0.2s ease-out;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background: var(--user);
+    }
+
+    .msg.assistant {
+      align-self: flex-start;
+      background: var(--assistant);
+    }
+
+    .msg.error {
+      align-self: flex-start;
+      border-color: #f4c7c3;
+      color: var(--danger);
+      background: #fff5f5;
+    }
+
+    .composer {
+      border-top: 1px solid var(--line);
+      background: var(--panel);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .composer textarea {
+      resize: none;
+      min-height: 56px;
+      max-height: 180px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .composer textarea:focus {
+      border-color: var(--brand);
+    }
+
+    .composer button {
+      align-self: end;
+      border: none;
+      background: var(--brand);
+      color: white;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 0 20px;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .composer button:hover {
+      background: var(--brand-hover);
+    }
+
+    .composer button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    @keyframes rise {
+      from { transform: translateY(5px); opacity: 0.1; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+
+      .left {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="left">
+      <h1 class="brand">PyRoo</h1>
+      <p class="subtitle">왼쪽에 LLM 연결 정보를 입력하고, 오른쪽에서 질문하세요.</p>
+
+      <div class="field">
+        <label for="baseUrl">Base LLM URL</label>
+        <input id="baseUrl" type="text" placeholder="예: https://api.openai.com" />
+      </div>
+
+      <div class="field">
+        <label for="token">Token</label>
+        <input id="token" type="password" placeholder="Bearer 토큰 값" />
+      </div>
+
+      <div class="field">
+        <label for="model">Model</label>
+        <input id="model" type="text" placeholder="예: gpt-4o-mini" />
+      </div>
+
+      <div class="hint">
+        Base URL은 보통 도메인까지만 넣으면 됩니다.<br />
+        앱이 자동으로 /v1/chat/completions 를 붙여 호출합니다.
+      </div>
+    </aside>
+
+    <main class="right">
+      <div class="chat-header">질문 / 답변</div>
+      <div id="messages" class="messages">
+        <div class="msg assistant">안녕하세요. 설정 값을 입력하고 질문을 보내주세요.</div>
+      </div>
+      <div class="composer">
+        <textarea id="question" placeholder="여기에 질문을 입력하세요..."></textarea>
+        <button id="sendBtn">전송</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const baseUrlInput = document.getElementById("baseUrl");
+    const tokenInput = document.getElementById("token");
+    const modelInput = document.getElementById("model");
+    const questionInput = document.getElementById("question");
+    const sendBtn = document.getElementById("sendBtn");
+    const messages = document.getElementById("messages");
+
+    baseUrlInput.value = localStorage.getItem("pyroo_base_url") || "";
+    tokenInput.value = localStorage.getItem("pyroo_token") || "";
+    modelInput.value = localStorage.getItem("pyroo_model") || "";
+
+    [baseUrlInput, tokenInput, modelInput].forEach((el) => {
+      el.addEventListener("input", () => {
+        localStorage.setItem("pyroo_base_url", baseUrlInput.value.trim());
+        localStorage.setItem("pyroo_token", tokenInput.value.trim());
+        localStorage.setItem("pyroo_model", modelInput.value.trim());
+      });
+    });
+
+    function appendMessage(role, text) {
+      const div = document.createElement("div");
+      div.className = `msg ${role}`;
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+      return div;
+    }
+
+    async function sendQuestion() {
+      const base_url = baseUrlInput.value.trim();
+      const token = tokenInput.value.trim();
+      const model = modelInput.value.trim();
+      const question = questionInput.value.trim();
+
+      if (!question) {
+        return;
+      }
+
+      appendMessage("user", question);
+      questionInput.value = "";
+      sendBtn.disabled = true;
+
+      const waiting = appendMessage("assistant", "답변을 생성하고 있습니다...");
+
+      try {
+        const response = await fetch("/api/ask/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ base_url, token, model, question }),
+        });
+
+        const data = await response.json();
+        waiting.remove();
+
+        if (!response.ok) {
+          const detail = data.detail ? `\n\n상세: ${data.detail}` : "";
+          appendMessage("error", `${data.error || "요청 실패"}${detail}`);
+          return;
+        }
+
+        appendMessage("assistant", data.answer || "(빈 응답)");
+      } catch (err) {
+        waiting.remove();
+        appendMessage("error", `네트워크 오류: ${err}`);
+      } finally {
+        sendBtn.disabled = false;
+        questionInput.focus();
+      }
+    }
+
+    sendBtn.addEventListener("click", sendQuestion);
+    questionInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendQuestion();
+      }
+    });
+  </script>
+</body>
+</html>

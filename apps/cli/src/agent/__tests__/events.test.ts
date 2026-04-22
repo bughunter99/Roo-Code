@@ -8,7 +8,7 @@ function createMessage(overrides: Partial<ClineMessage>): ClineMessage {
 }
 
 describe("taskCompleted", () => {
-	it("returns true for completion_result", () => {
+	it("returns true for completion_result when transitioning from active execution", () => {
 		const previous = detectAgentState([createMessage({ type: "say", say: "text", text: "working" })])
 		const current = detectAgentState([createMessage({ type: "ask", ask: "completion_result", partial: false })])
 
@@ -31,5 +31,12 @@ describe("taskCompleted", () => {
 
 		expect(taskCompleted(previous, mistakeLimit)).toBe(false)
 		expect(taskCompleted(previous, apiFailed)).toBe(false)
+	})
+
+	it("returns false when completion ask appears from non-active state", () => {
+		const previous = detectAgentState([createMessage({ type: "ask", ask: "api_req_failed", partial: false })])
+		const current = detectAgentState([createMessage({ type: "ask", ask: "completion_result", partial: false })])
+
+		expect(taskCompleted(previous, current)).toBe(false)
 	})
 })

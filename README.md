@@ -1,3 +1,10 @@
+pnpm install
+pnpm install:vsix -y
+
+pnpm install:vsix [-y] [--editor=<command>]
+
+
+
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=RooVeterinaryInc.roo-cline"><img src="https://img.shields.io/badge/VS_Code_Marketplace-007ACC?style=flat&logo=visualstudiocode&logoColor=white" alt="VS Code Marketplace"></a>
   <a href="https://x.com/roocode"><img src="https://img.shields.io/badge/roocode-000000?style=flat&logo=x&logoColor=white" alt="X"></a>
@@ -13,11 +20,10 @@
 
 > Your AI-Powered Dev Team, Right in Your Editor
 
-## What's New in v3.52.0
+## What's New in v3.51.0
 
-- Add Poe as an AI provider so you can access Poe models directly in Roo Code.
-- Improve the xAI provider with a Responses API migration, reusable transform utilities, and updated Grok-4.20 defaults.
-- Fix MiniMax model listings and context window handling for more reliable setup.
+- Add support for OpenAI GPT-5.4 and GPT-5.3 Chat Latest so you can use the newest OpenAI chat models in Roo Code.
+- Expose skills as slash commands with fallback execution to make reusable workflows faster to trigger.
 
 <details>
   <summary>🌐 Available languages</summary>
@@ -41,7 +47,7 @@
 - [简体中文](locales/zh-CN/README.md)
 - [繁體中文](locales/zh-TW/README.md)
 - ...
-  </details>
+      </details>
 
 ---
 

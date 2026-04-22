@@ -333,7 +333,7 @@ describe("Cline", () => {
 				startTask: false,
 			})
 
-			expect(cline.consecutiveMistakeLimit).toBe(3)
+			expect(cline.consecutiveMistakeLimit).toBe(15)
 		})
 
 		it("should respect provided consecutiveMistakeLimit", () => {

@@ -341,7 +341,7 @@ export const EVALS_SETTINGS: RooCodeSettings = {
 	allowedCommands: ["*"],
 	commandExecutionTimeout: 20,
 	commandTimeoutAllowlist: [],
-	preventCompletionWithOpenTodos: false,
+	preventCompletionWithOpenTodos: true,
 
 	ttsEnabled: false,
 	ttsSpeed: 1,

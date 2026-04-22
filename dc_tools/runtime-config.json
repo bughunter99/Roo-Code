@@ -1,0 +1,18 @@
+{
+  "snapshotIntervalSeconds": 300,
+  "description": "SQLite snapshot refresh interval in seconds (managed by external scheduler, not Roo)",
+  "tools": {
+    "tool1": {
+      "domain": "orders-production-delivery",
+      "sqlitePath": "d:\\data3\\Roo-Code\\dc_tools\\tool1\\tool1_sample.db"
+    },
+    "tool2": {
+      "domain": "quality-yield-defect",
+      "sqlitePath": "d:\\data3\\Roo-Code\\dc_tools\\tool2\\tool2_sample.db"
+    },
+    "tool3": {
+      "domain": "inventory-stock-movement",
+      "sqlitePath": "d:\\data3\\Roo-Code\\dc_tools\\tool3\\tool3_sample.db"
+    }
+  }
+}

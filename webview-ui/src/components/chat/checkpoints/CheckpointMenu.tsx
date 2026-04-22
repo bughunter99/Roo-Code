@@ -12,7 +12,6 @@ type CheckpointMenuBaseProps = {
 	ts: number
 	commitHash: string
 	checkpoint: Checkpoint
-	onJumpToPreviousCheckpoint?: () => void
 }
 type CheckpointMenuControlledProps = {
 	onOpenChange: (open: boolean) => void
@@ -22,13 +21,7 @@ type CheckpointMenuUncontrolledProps = {
 }
 type CheckpointMenuProps = CheckpointMenuBaseProps & (CheckpointMenuControlledProps | CheckpointMenuUncontrolledProps)
 
-export const CheckpointMenu = ({
-	ts,
-	commitHash,
-	checkpoint,
-	onOpenChange,
-	onJumpToPreviousCheckpoint,
-}: CheckpointMenuProps) => {
+export const CheckpointMenu = ({ ts, commitHash, checkpoint, onOpenChange }: CheckpointMenuProps) => {
 	const { t } = useTranslation()
 	const [internalRestoreOpen, setInternalRestoreOpen] = useState(false)
 	const [restoreConfirming, setRestoreConfirming] = useState(false)
@@ -172,16 +165,6 @@ export const CheckpointMenu = ({
 					</div>
 				</PopoverContent>
 			</Popover>
-			<StandardTooltip content={t("chat:scrollToLatestCheckpoint")}>
-				<Button
-					variant="ghost"
-					size="icon"
-					onClick={onJumpToPreviousCheckpoint}
-					data-testid="jump-previous-checkpoint-btn"
-					aria-label={t("chat:scrollToLatestCheckpoint")}>
-					<span className="codicon codicon-chevron-up" />
-				</Button>
-			</StandardTooltip>
 			<Popover open={moreOpen} onOpenChange={(open) => setMoreOpen(open)} data-testid="more-popover">
 				<StandardTooltip content={t("chat:task.seeMore")}>
 					<PopoverTrigger asChild>

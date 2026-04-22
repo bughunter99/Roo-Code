@@ -1,0 +1,18 @@
+﻿@startuml
+title Roo-Code - 흐름도(Flowchart)
+start
+:요청 수신;
+:입력 검증;
+if (검증 성공?) then (Yes)
+  :핵심 로직 실행;
+  if (처리 성공?) then (Yes)
+    :결과 생성;
+  else (No)
+    :오류 처리;
+  endif
+else (No)
+  :검증 실패 응답;
+endif
+:로그 기록;
+stop
+@enduml

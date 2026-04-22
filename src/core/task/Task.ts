@@ -137,6 +137,7 @@ const MAX_EXPONENTIAL_BACKOFF_SECONDS = 600 // 10 minutes
 const DEFAULT_USAGE_COLLECTION_TIMEOUT_MS = 5000 // 5 seconds
 const FORCED_CONTEXT_REDUCTION_PERCENT = 75 // Keep 75% of context (remove 25%) on context window errors
 const MAX_CONTEXT_WINDOW_RETRIES = 3 // Maximum retries for context window errors
+const TASK_PROGRESS_UPDATE_INTERVAL = 5
 
 export interface TaskOptions extends CreateTaskOptions {
 	provider: ClineProvider
@@ -144,6 +145,7 @@ export interface TaskOptions extends CreateTaskOptions {
 	enableCheckpoints?: boolean
 	checkpointTimeout?: number
 	consecutiveMistakeLimit?: number
+	taskProgressInterval?: number
 	task?: string
 	images?: string[]
 	historyItem?: HistoryItem
@@ -319,6 +321,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 	// Tool Use
 	consecutiveMistakeCount: number = 0
 	consecutiveMistakeLimit: number
+	taskProgressInterval: number
 	consecutiveMistakeCountForApplyDiff: Map<string, number> = new Map()
 	consecutiveMistakeCountForEditFile: Map<string, number> = new Map()
 	consecutiveNoToolUseCount: number = 0
@@ -423,6 +426,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		enableCheckpoints = true,
 		checkpointTimeout = DEFAULT_CHECKPOINT_TIMEOUT_SECONDS,
 		consecutiveMistakeLimit = DEFAULT_CONSECUTIVE_MISTAKE_LIMIT,
+		taskProgressInterval = TASK_PROGRESS_UPDATE_INTERVAL,
 		taskId,
 		task,
 		images,
@@ -488,6 +492,7 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 		this.autoApprovalHandler = new AutoApprovalHandler()
 
 		this.consecutiveMistakeLimit = consecutiveMistakeLimit ?? DEFAULT_CONSECUTIVE_MISTAKE_LIMIT
+		this.taskProgressInterval = taskProgressInterval ?? TASK_PROGRESS_UPDATE_INTERVAL
 		this.providerRef = new WeakRef(provider)
 		this.globalStoragePath = provider.context.globalStorageUri.fsPath
 		this.diffViewProvider = new DiffViewProvider(this.cwd, this)
@@ -2475,10 +2480,26 @@ export class Task extends EventEmitter<TaskEvents> implements TaskLike {
 
 		let nextUserContent = userContent
 		let includeFileDetails = true
+		let loopIteration = 0
 
 		this.emit(RooCodeEventName.TaskStarted)
 
 		while (!this.abort) {
+			loopIteration++
+
+			if (loopIteration > 1 && (loopIteration === 2 || loopIteration % this.taskProgressInterval === 0)) {
+				const limitLabel = this.consecutiveMistakeLimit === 0 ? "unlimited" : String(this.consecutiveMistakeLimit)
+				await this.say(
+					"text",
+					`Progress update: still working (attempt ${loopIteration}, mistake budget ${this.consecutiveMistakeCount}/${limitLabel}).`,
+					undefined,
+					false,
+					undefined,
+					undefined,
+					{ isNonInteractive: true },
+				)
+			}
+
 			const didEndLoop = await this.recursivelyMakeClineRequests(nextUserContent, includeFileDetails)
 			includeFileDetails = false // We only need file details the first time.
 

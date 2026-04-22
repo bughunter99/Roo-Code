@@ -169,7 +169,7 @@ export class ClineProvider
 
 	public isViewLaunched = false
 	public settingsImportedAt?: number
-	public readonly latestAnnouncementId = "apr-2026-v3.52.0-poe-xai-minimax" // v3.52.0 Poe provider, xAI improvements, and MiniMax fixes
+	public readonly latestAnnouncementId = "mar-2026-v3.51.0-gpt-54-slash-skills" // v3.51.0 OpenAI GPT-5.4 support and slash command skills
 	public readonly providerSettingsManager: ProviderSettingsManager
 	public readonly customModesManager: CustomModesManager
 
@@ -1081,6 +1081,7 @@ export class ClineProvider
 			enableCheckpoints,
 			checkpointTimeout,
 			consecutiveMistakeLimit: apiConfiguration.consecutiveMistakeLimit,
+			taskProgressInterval: vscode.workspace.getConfiguration(Package.name).get<number>("taskProgressInterval", 5),
 			historyItem,
 			experiments,
 			rootTask: historyItem.rootTask,
@@ -2956,6 +2957,7 @@ export class ClineProvider
 			enableCheckpoints,
 			checkpointTimeout,
 			consecutiveMistakeLimit: apiConfiguration.consecutiveMistakeLimit,
+			taskProgressInterval: vscode.workspace.getConfiguration(Package.name).get<number>("taskProgressInterval", 5),
 			task: text,
 			images,
 			experiments,

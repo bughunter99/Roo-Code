@@ -1,0 +1,30 @@
+﻿@startuml
+title Roo-Code - ER 다이어그램(개념)
+entity Project {
+  * project_id : string
+  --
+  name : string
+  path : string
+}
+entity Module {
+  * module_id : string
+  --
+  name : string
+  type : string
+}
+entity BuildConfig {
+  * config_id : string
+  --
+  build_tool : string
+  language : string
+}
+entity Artifact {
+  * artifact_id : string
+  --
+  name : string
+  version : string
+}
+Project ||--o{ Module : contains
+Project ||--|| BuildConfig : has
+Module ||--o{ Artifact : produces
+@enduml

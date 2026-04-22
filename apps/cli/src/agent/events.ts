@@ -263,7 +263,16 @@ export function taskCompleted(previous: AgentStateInfo, current: AgentStateInfo)
 	const completionAsks = ["completion_result", "resume_completed_task"]
 	const wasNotComplete = !previous.currentAsk || !completionAsks.includes(previous.currentAsk)
 	const isNowComplete = current.currentAsk !== undefined && completionAsks.includes(current.currentAsk)
-	return wasNotComplete && isNowComplete
+
+	if (!wasNotComplete || !isNowComplete) {
+		return false
+	}
+
+	// Emit completion only when we are transitioning from active execution.
+	// This avoids treating already-idle/history-opened states as a fresh completion.
+	const cameFromActiveExecution = previous.isRunning || previous.isStreaming || previous.state === "waiting_for_input"
+
+	return cameFromActiveExecution
 }
 
 // =============================================================================

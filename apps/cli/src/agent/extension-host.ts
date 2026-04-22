@@ -95,6 +95,11 @@ export interface ExtensionHostOptions {
 	 * running in an integration test and we want to see the output.
 	 */
 	integrationTest?: boolean
+	/**
+	 * Maximum milliseconds to wait for a taskCompleted event before rejecting.
+	 * Defaults to 10 minutes (600_000 ms). Set to 0 to disable the timeout.
+	 */
+	taskTimeoutMs?: number
 }
 
 interface ExtensionModule {
@@ -475,8 +480,10 @@ export class ExtensionHost extends EventEmitter implements ExtensionHostInterfac
 	// Task Management
 	// ==========================================================================
 
-	private waitForTaskCompletion(): Promise<void> {
+	private waitForTaskCompletion(timeoutMs = 10 * 60 * 1000): Promise<void> {
 		return new Promise((resolve, reject) => {
+			let timeoutHandle: ReturnType<typeof setTimeout> | null = null
+
 			const completeHandler = () => {
 				cleanup()
 				resolve()
@@ -494,6 +501,11 @@ export class ExtensionHost extends EventEmitter implements ExtensionHostInterfac
 				if (messageHandler) {
 					this.client.off("message", messageHandler)
 				}
+
+				if (timeoutHandle !== null) {
+					clearTimeout(timeoutHandle)
+					timeoutHandle = null
+				}
 			}
 
 			// When exitOnError is enabled, listen for api_req_retry_delayed messages
@@ -510,6 +522,11 @@ export class ExtensionHost extends EventEmitter implements ExtensionHostInterfac
 
 				this.client.on("message", messageHandler)
 			}
+
+			timeoutHandle = setTimeout(() => {
+				cleanup()
+				reject(new Error(`Task timed out after ${timeoutMs / 1000}s with no completion signal`))
+			}, timeoutMs)
 
 			this.client.once("taskCompleted", completeHandler)
 			this.client.once("error", errorHandler)
@@ -529,12 +546,12 @@ export class ExtensionHost extends EventEmitter implements ExtensionHostInterfac
 			taskConfiguration: configuration,
 			...(images !== undefined ? { images } : {}),
 		})
-		return this.waitForTaskCompletion()
+		return this.waitForTaskCompletion(this.options.taskTimeoutMs ?? 10 * 60 * 1000)
 	}
 
 	public async resumeTask(taskId: string): Promise<void> {
 		this.sendToExtension({ type: "showTaskWithId", text: taskId })
-		return this.waitForTaskCompletion()
+		return this.waitForTaskCompletion(this.options.taskTimeoutMs ?? 10 * 60 * 1000)
 	}
 
 	// ==========================================================================

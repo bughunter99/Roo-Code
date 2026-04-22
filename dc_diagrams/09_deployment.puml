@@ -1,0 +1,16 @@
+﻿@startuml
+title Roo-Code - 배포 다이어그램
+node "Developer Machine" as DEV {
+  artifact "Source Code"
+}
+node "CI/CD" as CI {
+  artifact "Build Artifact"
+}
+node "Runtime Environment" as RUN {
+  artifact "Executable Service"
+  database "Persistent Storage"
+}
+DEV --> CI : commit/push
+CI --> RUN : deploy
+RUN --> RUN : monitor/log
+@enduml

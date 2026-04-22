@@ -1,0 +1,15 @@
+﻿@startuml
+title Roo-Code - 컴포넌트 다이어그램
+package "Roo-Code" {
+  [EntryPoint]
+  [.changeset_Component]
+  [.github_Component]
+  [.husky_Component]
+  [Logging/Config]
+}
+[EntryPoint] --> [.changeset_Component]
+[.changeset_Component] --> [.github_Component]
+[.github_Component] --> [.husky_Component]
+[.changeset_Component] --> [Logging/Config]
+[.github_Component] --> [Logging/Config]
+@enduml

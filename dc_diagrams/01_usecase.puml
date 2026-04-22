@@ -1,0 +1,16 @@
+﻿@startuml
+left to right direction
+title Roo-Code - 유스케이스 다이어그램
+actor 사용자
+actor 관리자
+rectangle "Roo-Code 시스템" {
+  usecase "프로젝트 빌드" as UC1
+  usecase "프로젝트 실행" as UC2
+  usecase "테스트 수행" as UC3
+  usecase "설정/배포 관리" as UC4
+}
+사용자 --> UC1
+사용자 --> UC2
+사용자 --> UC3
+관리자 --> UC4
+@enduml

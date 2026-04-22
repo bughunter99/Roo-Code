@@ -124,7 +124,6 @@ interface ChatRowProps {
 	isFollowUpAutoApprovalPaused?: boolean
 	editable?: boolean
 	hasCheckpoint?: boolean
-	onJumpToPreviousCheckpoint?: () => void
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -178,7 +177,6 @@ export const ChatRowContent = ({
 	onBatchFileResponse,
 	isFollowUpAnswered,
 	isFollowUpAutoApprovalPaused,
-	onJumpToPreviousCheckpoint,
 }: ChatRowContentProps) => {
 	const { t, i18n } = useTranslation()
 
@@ -1343,7 +1341,6 @@ export const ChatRowContent = ({
 							commitHash={message.text!}
 							currentHash={currentCheckpoint}
 							checkpoint={message.checkpoint}
-							onJumpToPreviousCheckpoint={onJumpToPreviousCheckpoint}
 						/>
 					)
 				case "condense_context":

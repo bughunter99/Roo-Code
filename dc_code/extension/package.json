@@ -1,0 +1,40 @@
+{
+  "name": "sqlite-query-tool",
+  "displayName": "SQLite Query Tool",
+  "description": "VS Code extension for querying SQLite databases",
+  "version": "0.0.1",
+  "publisher": "dccode",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Database",
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:sqliteQuery.openQuery"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sqliteQuery.openQuery",
+        "title": "SQLite: Open Query Tool"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.0.0"
+  }
+}
+

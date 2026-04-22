@@ -1,0 +1,13 @@
+﻿@startuml
+title Roo-Code - 데이터 흐름도(DFD)
+actor ExternalUser as EU
+rectangle "P1 입력 처리" as P1
+rectangle "P2 비즈니스 로직" as P2
+rectangle "P3 출력/저장" as P3
+database "D1 설정/데이터 저장소" as D1
+EU --> P1 : 요청/입력
+P1 --> P2 : 정제된 입력
+P2 --> P3 : 처리 결과
+P2 <--> D1 : 조회/갱신
+P3 --> EU : 결과/응답
+@enduml

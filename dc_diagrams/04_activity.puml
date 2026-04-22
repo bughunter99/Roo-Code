@@ -1,0 +1,17 @@
+﻿@startuml
+title Roo-Code - 활동 다이어그램
+start
+:소스/설정 로드;
+if (설정 유효?) then (예)
+  :의존성 초기화;
+  :핵심 모듈 실행;
+  if (오류 발생?) then (예)
+    :예외 처리 및 로그 기록;
+  else (아니오)
+    :정상 결과 반환;
+  endif
+else (아니오)
+  :설정 오류 보고;
+endif
+stop
+@enduml

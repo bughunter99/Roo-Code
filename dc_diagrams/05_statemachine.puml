@@ -1,0 +1,12 @@
+﻿@startuml
+title Roo-Code - 상태 머신 다이어그램
+[*] --> Initialized
+Initialized --> Configured : 설정 로드
+Configured --> Running : 실행 시작
+Running --> Paused : 일시정지/대기
+Paused --> Running : 재개
+Running --> Error : 예외 발생
+Error --> Running : 복구
+Running --> Stopped : 종료 요청
+Stopped --> [*]
+@enduml

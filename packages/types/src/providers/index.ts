@@ -13,7 +13,6 @@ export * from "./openai.js"
 export * from "./openai-codex.js"
 export * from "./openai-codex-rate-limits.js"
 export * from "./openrouter.js"
-export * from "./poe.js"
 export * from "./qwen-code.js"
 export * from "./requesty.js"
 export * from "./roo.js"
@@ -37,7 +36,6 @@ import { mistralDefaultModelId } from "./mistral.js"
 import { moonshotDefaultModelId } from "./moonshot.js"
 import { openAiCodexDefaultModelId } from "./openai-codex.js"
 import { openRouterDefaultModelId } from "./openrouter.js"
-import { poeDefaultModelId } from "./poe.js"
 import { qwenCodeDefaultModelId } from "./qwen-code.js"
 import { requestyDefaultModelId } from "./requesty.js"
 import { rooDefaultModelId } from "./roo.js"
@@ -109,8 +107,6 @@ export function getProviderDefaultModelId(
 			return rooDefaultModelId
 		case "qwen-code":
 			return qwenCodeDefaultModelId
-		case "poe":
-			return poeDefaultModelId
 		case "unbound":
 			return unboundDefaultModelId
 		case "vercel-ai-gateway":
